@@ -16,10 +16,8 @@ var port = 8085;
 try {
     var config = JSON.parse(fs.readFileSync("config.json"));
     base_dir = config.base_dir;
-    if (base_dir.split('\\').length > 2 && base_dir.endsWith('\\')) {
-        var pathSections = base_dir.split('\\');
-        pathSections.pop();
-        base_dir = pathSections.join('\\');
+    if (!base_dir.endsWith('\\')) {
+        base_dir += "\\";
     };
     port = config.port;
 } catch (error) {
@@ -65,7 +63,7 @@ function generateItemsInfo(dst) {
         var item = {};
         var stats = fs.statSync(path.join(dst, itemName));
         item.name = itemName;
-        item.link = "cd?dst=" + encodeURIComponent(path.join(dst, itemName));
+        item.link = "cd?dst=" + encodeURIComponent(path.join(dst, itemName)) + "\\";
         var info = {};
         info.time = moment(stats.mtimeMs).format('YYYY-MM-DD');
         if (stats.isDirectory()) {
@@ -135,7 +133,11 @@ app.get('/base', urlencodedParser, function (req, res) {
 
 app.get('/cd', urlencodedParser, function (req, res) {
     var dst = req.query.dst;
-    console.log(util.format("\x1B[34m[%s]Access Path:  %s\x1B[39m", moment().format('YYYY-MM-DD HH:mm:ss'), dst));
+    if (dst === base_dir) {
+        console.log(util.format("\x1B[33m[%s]Access BaseDirectory:  %s\x1B[39m", moment().format('YYYY-MM-DD HH:mm:ss'), base_dir));
+    } else {
+        console.log(util.format("\x1B[34m[%s]Access Path:  %s\x1B[39m", moment().format('YYYY-MM-DD HH:mm:ss'), dst));
+    }
     var stats = fs.statSync(dst);
     if (stats.isDirectory()) {
         var fileInfo = {
@@ -146,7 +148,7 @@ app.get('/cd', urlencodedParser, function (req, res) {
     } else {
         var fileInfo = {
             "isDirectory": false,
-            "format": checkFileFormat(dst.split("\\").pop())
+            "format": checkFileFormat(dst.split("\\").slice(-2)[0])
         }
         res.end(JSON.stringify(fileInfo));
     }
