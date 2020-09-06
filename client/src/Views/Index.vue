@@ -136,7 +136,7 @@ export default {
                     let shortPath = "<span style='color: #0affe1'> …… </span>" + this.currentPath.replace(this.baseDir, "Home\\").slice(-45);
                     return shortPath.replace(/\\/g, "<span style='color: #fffcea'> \\ </span>");
                 } else {
-                    return (this.currentPath + "\\").replace(this.baseDir, "Home\\").replace(/\\/g, "<span style='color: #fffcea'> \\ </span>");
+                    return (this.currentPath ).replace(this.baseDir, "Home\\").replace(/\\/g, "<span style='color: #fffcea'> \\ </span>");
                 }
             }
         },
@@ -164,13 +164,13 @@ export default {
                     if (supportFormat.indexOf(response.data.format) !== -1) {
                         this.preViewType = response.data.format;
                         this.showPreView = true;
-                        this.preViewTitle = decodeURIComponent(link.substring(link.indexOf("dst=") + 4)).split("\\").pop();
+                        this.preViewTitle = decodeURIComponent(link.substring(link.indexOf("dst=") + 4)).split("\\").slice(-2)[0];
                         this.preViewFileLink = "download?link=" + link;
                         this.downloadLink = this.preViewFileLink;
-                        this.downloadFile = decodeURIComponent(this.preViewFileLink).split('\\').pop();
+                        this.downloadFile = decodeURIComponent(this.preViewFileLink).split('\\').slice(-2)[0];
                     } else {
                         this.downloadLink = "download?link=" + link;
-                        this.downloadFile = decodeURIComponent(link).split('\\').pop();
+                        this.downloadFile = decodeURIComponent(link).split('\\').slice(-2)[0];
                         this.$Modal.confirm({
                             title: '确定要下载此文件吗？',
                             onOk: () => {
@@ -185,8 +185,8 @@ export default {
         },
         jumpToLast() {
             let pathSections = this.currentPath.split("\\");
-            pathSections.pop();
-            pathSections.length === 1 ? this.jumpToHome() : this.jumpTo("cd?dst=" + encodeURIComponent(pathSections.join('\\')));
+            pathSections.splice(-2);
+            pathSections.length === 1 ? this.jumpToHome() : this.jumpTo("cd?dst=" + encodeURIComponent(pathSections.join('\\') + '\\'));
         },
         jumpToHome() {
             this.jumpTo("cd?dst=" + encodeURIComponent(this.baseDir));
