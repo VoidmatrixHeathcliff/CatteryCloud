@@ -129,7 +129,7 @@ app.get('/base', urlencodedParser, function (req, res) {
         "base": base_dir,
         "items": generateItemsInfo(base_dir)
     };
-    console.log(util.format("\x1B[33m[%s]Access BaseDictionary:  %s\x1B[39m", moment().format('YYYY-MM-DD HH:mm:ss'), base_dir));
+    console.log(util.format("\x1B[33m[%s]Access BaseDirectory:  %s\x1B[39m", moment().format('YYYY-MM-DD HH:mm:ss'), base_dir));
     res.end(JSON.stringify(baseInfo));
 });
 
@@ -162,5 +162,5 @@ app.get('/download', urlencodedParser, function (req, res) {
 
 app.listen(port, function () {
     console.log("\x1B[32m< CatteryCloud > Server booted successfully!\x1B[39m");
-    console.log(util.format("\x1B[32mPort: %s | BaseDictionary: \"%s\"\x1B[39m\n", port, base_dir));
+    console.log(util.format("\x1B[32mPort: %s | BaseDirectory: \"%s\"\x1B[39m\n", port, base_dir));
 })
