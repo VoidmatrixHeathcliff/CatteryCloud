@@ -24,7 +24,6 @@ try {
     port = config.port;
 } catch (error) {
     console.log('\n\x1B[41mFailed to load external configuration file, trying to run with default configuration! \x1B[49m\n');
-    console.log(error);
 }
 
 app.use(express.static(path.join(__dirname, 'dist')))
